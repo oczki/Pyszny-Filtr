@@ -14,7 +14,9 @@
     const restaurantInfoButton = "#menu-tab-content button.info.info-icon";
 
     const cssRules = `
-    body { }
+    input.pyszny-filtr {
+        border-right: 1px solid #ebebeb;
+    }
 `;
 
     function applyCss(rules) {
@@ -25,7 +27,44 @@
         document.head.appendChild(styleElem);
     }
 
-    function addInputs() {}
+    function insertDomBefore(newNode, referenceNode) {
+        referenceNode.parentNode.insertBefore(newNode, referenceNode)
+    }
+
+    function insertDomAfter(newNode, referenceNode) {
+        referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+    }
+
+    function filterByWanted() {}
+
+    function filterByUnwanted() {}
+
+    function addWantedIngredientsInput() {
+        let elem = document.createElement("input");
+        elem.classList.add("pyszny-filtr");
+        elem.classList.add("wanted");
+        elem.addEventListener("input", function(event) {
+                                           event.stopPropagation();
+                                           filterByWanted();
+                                       });
+        insertDomBefore(elem, document.querySelector(restaurantInfoButton));
+    }
+
+    function addUnwantedIngredientsInput() {
+        let elem = document.createElement("input");
+        elem.classList.add("pyszny-filtr");
+        elem.classList.add("unwanted");
+        elem.addEventListener("input", function(event) {
+                                           event.stopPropagation();
+                                           filterByUnwanted();
+                                       });
+        insertDomBefore(elem, document.querySelector(restaurantInfoButton));
+    }
+
+    function addInputs() {
+        addUnwantedIngredientsInput();
+        addWantedIngredientsInput();
+    }
 
     function loadDefaultValues() {}
 
