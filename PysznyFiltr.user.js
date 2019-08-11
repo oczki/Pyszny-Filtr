@@ -15,8 +15,10 @@
     const restaurantInfoButton = infoAndFav + " button.info.info-icon";
     const restaurantFavButton = infoAndFav + " button.fav.favorite-icon";
     const pysznyFiltrDiv = infoAndFav + " div.pyszny-filtr";
+    const pysznyFiltrWantedInput = pysznyFiltrDiv + " input.wanted";
+    const pysznyFiltrUnwantedInput = pysznyFiltrDiv + " input.unwanted";
 
-    const mealContainer = "div.meal_container";
+    const mealContainer = "div.meal-container";
     const ingredientsDiv = "div.meal__description-additional-info";
 
     const cssRules = `
@@ -70,7 +72,7 @@
         referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
     }
 
-    function filterByWanted() {}
+    function filterByWanted() { startFiltering(); }
 
     function filterByUnwanted() {}
 
@@ -106,7 +108,31 @@
 
     function loadDefaultValues() {}
 
-    function startFiltering() {}
+    function getMeals() {
+        return document.querySelectorAll(mealContainer);
+    }
+
+    function getWantedIngredients() {
+        let input = document.querySelector(pysznyFiltrWantedInput);
+        return input.value.split(/\s*,\s*/).filter(x => x);
+    }
+
+    function startFiltering() {
+        let wantedIngredients = getWantedIngredients();
+        for (let meal of getMeals()) {
+            let ingredients = meal.querySelector(ingredientsDiv);
+            if (ingredients !== null) {
+                let ingredientsText = ingredients.textContent;
+                if (wantedIngredients.length > 0) {
+                    if (ingredientsText.includes(wantedIngredients[0])) {
+                        meal.style.display = "block";
+                    } else {
+                        meal.style.display = "none";
+                    }
+                }
+            }
+        }
+    }
 
     function run() {
         applyCss(cssRules);
