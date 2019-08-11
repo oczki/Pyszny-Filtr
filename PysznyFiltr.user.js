@@ -14,11 +14,12 @@
     const infoAndFav = "#menu-tab-content .info-and-fav";
     const restaurantInfoButton = infoAndFav + " button.info.info-icon";
     const restaurantFavButton = infoAndFav + " button.fav.favorite-icon";
+    const pysznyFiltrDiv = infoAndFav + " div.pyszny-filtr";
+
+    const mealContainer = "div.meal_container";
+    const ingredientsDiv = "div.meal__description-additional-info";
 
     const cssRules = `
-    input.pyszny-filtr {
-        border-right: 1px solid #ebebeb;
-    }
     ${infoAndFav} {
         border: none;
     }
@@ -34,6 +35,22 @@
         border-top-right-radius: 2px;
         border-bottom-right-radius: 2px;
         height: 48px;
+    }
+    ${pysznyFiltrDiv} input {
+        border: 1px solid #ebebeb;
+        width: 150px;
+        height: 48px;
+        font-size: 120%;
+        padding: 5px;
+    }
+    ${pysznyFiltrDiv} input:first-child {
+        margin-right: -1px;
+        border-top-left-radius: 2px;
+        border-bottom-left-radius: 2px;
+    }
+    ${pysznyFiltrDiv} input:last-child {
+        border-top-right-radius: 2px;
+        border-bottom-right-radius: 2px;
     }
 `;
 
@@ -57,7 +74,7 @@
 
     function filterByUnwanted() {}
 
-    function addWantedIngredientsInput() {
+    function createWantedIngredientsInput() {
         let elem = document.createElement("input");
         elem.classList.add("pyszny-filtr");
         elem.classList.add("wanted");
@@ -65,10 +82,10 @@
                                            event.stopPropagation();
                                            filterByWanted();
                                        });
-        insertDomBefore(elem, document.querySelector(restaurantInfoButton));
+        return elem;
     }
 
-    function addUnwantedIngredientsInput() {
+    function createUnwantedIngredientsInput() {
         let elem = document.createElement("input");
         elem.classList.add("pyszny-filtr");
         elem.classList.add("unwanted");
@@ -76,12 +93,15 @@
                                            event.stopPropagation();
                                            filterByUnwanted();
                                        });
-        insertDomBefore(elem, document.querySelector(restaurantInfoButton));
+        return elem;
     }
 
     function addInputs() {
-        addUnwantedIngredientsInput();
-        addWantedIngredientsInput();
+        let container = document.createElement("div");
+        container.classList.add("pyszny-filtr");
+        insertDomBefore(container, document.querySelector(restaurantInfoButton));
+        container.appendChild(createWantedIngredientsInput());
+        container.appendChild(createUnwantedIngredientsInput());
     }
 
     function loadDefaultValues() {}
