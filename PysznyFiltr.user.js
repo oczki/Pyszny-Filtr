@@ -11,11 +11,29 @@
 (function() {
     'use strict';
 
-    const restaurantInfoButton = "#menu-tab-content button.info.info-icon";
+    const infoAndFav = "#menu-tab-content .info-and-fav";
+    const restaurantInfoButton = infoAndFav + " button.info.info-icon";
+    const restaurantFavButton = infoAndFav + " button.fav.favorite-icon";
 
     const cssRules = `
     input.pyszny-filtr {
         border-right: 1px solid #ebebeb;
+    }
+    ${infoAndFav} {
+        border: none;
+    }
+    ${restaurantInfoButton} {
+        border: 1px solid #ebebeb;
+        border-top-left-radius: 2px;
+        border-bottom-left-radius: 2px;
+        margin: 0 -1px 0 5px;
+        height: 48px;
+    }
+    ${restaurantFavButton} {
+        border: 1px solid #ebebeb;
+        border-top-right-radius: 2px;
+        border-bottom-right-radius: 2px;
+        height: 48px;
     }
 `;
 
