@@ -72,10 +72,6 @@
         referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
     }
 
-    function filterByWanted() { startFiltering(); }
-
-    function filterByUnwanted() {}
-
     function createWantedIngredientsInput() {
         let elem = document.createElement("input");
         elem.classList.add("pyszny-filtr");
@@ -114,22 +110,64 @@
 
     function getWantedIngredients() {
         let input = document.querySelector(pysznyFiltrWantedInput);
-        return input.value.split(/\s*,\s*/).filter(x => x);
+        return input.value.split(/\s*,\s*/).filter(nonEmpty => nonEmpty);
     }
 
-    function startFiltering() {
+    function getUnwantedIngredients() {
+        let input = document.querySelector(pysznyFiltrUnwantedInput);
+        return input.value.split(/\s*,\s*/).filter(nonEmpty => nonEmpty);
+    }
+
+    function filterByWanted() {
         let wantedIngredients = getWantedIngredients();
-        for (let meal of getMeals()) {
-            let ingredients = meal.querySelector(ingredientsDiv);
-            if (ingredients !== null) {
-                let ingredientsText = ingredients.textContent;
-                if (wantedIngredients.length > 0) {
-                    if (ingredientsText.includes(wantedIngredients[0])) {
-                        meal.style.display = "block";
-                    } else {
-                        meal.style.display = "none";
+        let meals = getMeals();
+        if (wantedIngredients.length > 0) {
+            for (let meal of meals) {
+                let ingredients = meal.querySelector(ingredientsDiv);
+                if (ingredients !== null) {
+                    let ingredientsText = ingredients.textContent;
+                    let hasAllWantedIngredients = true;
+                    for (let wantedIngredient of wantedIngredients) {
+                        if (!ingredientsText.includes(wantedIngredient)) {
+                            hasAllWantedIngredients = false;
+                            break;
+                        }
                     }
+                    meal.style.display = (hasAllWantedIngredients ? "block" : "none");
+                } else {
+                    meal.style.display = "none"; // no description? go away
                 }
+            }
+        } else { // empty filter? show all back again
+            for (let meal of meals) {
+                meal.style.display = "block";
+            }
+        }
+    }
+
+    function filterByUnwanted() {
+        let unwantedIngredients = getUnwantedIngredients();
+        let meals = getMeals();
+        if (unwantedIngredients.length > 0) {
+            for (let meal of meals) {
+                let ingredients = meal.querySelector(ingredientsDiv);
+                if (ingredients !== null) {
+                    let ingredientsText = ingredients.textContent;
+                    let hasUnwantedIngredient = false;
+                    for (let unwantedIngredient of unwantedIngredients) {
+                        if (ingredientsText.includes(unwantedIngredient)) {
+                            hasUnwantedIngredient = true;
+                            break;
+                        }
+                    }
+                    meal.style.display = (hasUnwantedIngredient ? "none" : "block");
+                } else {
+                    meal.style.display = "block"; // no description? no unwanted ingredients.
+                }
+            }
+        } else { // empty filter? show all back again
+            for (let meal of meals) {
+                meal.style.display = "block";
             }
         }
     }
