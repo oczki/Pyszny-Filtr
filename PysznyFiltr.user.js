@@ -95,8 +95,6 @@
         get value() {
             return this.input.value.split(/\s*,\s*/).filter(nonEmpty => nonEmpty);
         }
-
-        filter() { console.log("filter " + this.direction); }
     }
 
     class FiltersHolder {
