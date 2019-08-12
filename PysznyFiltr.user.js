@@ -72,34 +72,63 @@
         referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
     }
 
-    function createWantedIngredientsInput() {
-        let elem = document.createElement("input");
-        elem.classList.add("pyszny-filtr");
-        elem.classList.add("wanted");
-        elem.addEventListener("input", function(event) {
-                                           event.stopPropagation();
-                                           filterByWanted();
-                                       });
-        return elem;
+    class IngredientFilter {
+        constructor(direction, callback) {
+            this.direction = direction;
+            this.callback = callback;
+        }
+
+        createInputElement() {
+            let elem = document.createElement("input");
+            elem.classList.add("pyszny-filtr");
+            elem.classList.add(this.direction);
+            return elem;
+        }
+
+        get input() {
+            if (this.inputElement == undefined) {
+                this.inputElement = this.createInputElement();
+            }
+            return this.inputElement;
+        }
+
+        get value() {
+            return this.input.value.split(/\s*,\s*/).filter(nonEmpty => nonEmpty);
+        }
+
+        filter() { console.log("filter " + this.direction); }
     }
 
-    function createUnwantedIngredientsInput() {
-        let elem = document.createElement("input");
-        elem.classList.add("pyszny-filtr");
-        elem.classList.add("unwanted");
-        elem.addEventListener("input", function(event) {
-                                           event.stopPropagation();
-                                           filterByUnwanted();
-                                       });
-        return elem;
+    class FiltersHolder {
+        constructor() {
+            this.meals = getMeals();
+            this.wanted = new IngredientFilter("wanted");
+            this.unwanted = new IngredientFilter("unwanted");
+
+            this.wanted.input.addEventListener("input", () => this.filter());
+            this.unwanted.input.addEventListener("input", () => this.filter());
+        }
+
+        filter() {
+            let wanted = this.wanted.value;
+            let unwanted = this.unwanted.value;
+
+            for (let meal of this.meals) {
+                let ingredients = (meal.querySelector(ingredientsDiv) || {}).textContent || "";
+                const show = wanted.every(ingredient => ingredients.includes(ingredient))
+                          && unwanted.every(ingredient => !ingredients.includes(ingredient));
+                meal.style.display = (show ? "block" : "none");
+            }
+        }
     }
 
     function addInputs() {
         let container = document.createElement("div");
         container.classList.add("pyszny-filtr");
         insertDomBefore(container, document.querySelector(restaurantInfoButton));
-        container.appendChild(createWantedIngredientsInput());
-        container.appendChild(createUnwantedIngredientsInput());
+        let filters = new FiltersHolder();
+        container.appendChild(filters.wanted.input);
+        container.appendChild(filters.unwanted.input);
     }
 
     function loadDefaultValues() {}
@@ -108,75 +137,10 @@
         return document.querySelectorAll(mealContainer);
     }
 
-    function getWantedIngredients() {
-        let input = document.querySelector(pysznyFiltrWantedInput);
-        return input.value.split(/\s*,\s*/).filter(nonEmpty => nonEmpty);
-    }
-
-    function getUnwantedIngredients() {
-        let input = document.querySelector(pysznyFiltrUnwantedInput);
-        return input.value.split(/\s*,\s*/).filter(nonEmpty => nonEmpty);
-    }
-
-    function filterByWanted() {
-        let wantedIngredients = getWantedIngredients();
-        let meals = getMeals();
-        if (wantedIngredients.length > 0) {
-            for (let meal of meals) {
-                let ingredients = meal.querySelector(ingredientsDiv);
-                if (ingredients !== null) {
-                    let ingredientsText = ingredients.textContent;
-                    let hasAllWantedIngredients = true;
-                    for (let wantedIngredient of wantedIngredients) {
-                        if (!ingredientsText.includes(wantedIngredient)) {
-                            hasAllWantedIngredients = false;
-                            break;
-                        }
-                    }
-                    meal.style.display = (hasAllWantedIngredients ? "block" : "none");
-                } else {
-                    meal.style.display = "none"; // no description? go away
-                }
-            }
-        } else { // empty filter? show all back again
-            for (let meal of meals) {
-                meal.style.display = "block";
-            }
-        }
-    }
-
-    function filterByUnwanted() {
-        let unwantedIngredients = getUnwantedIngredients();
-        let meals = getMeals();
-        if (unwantedIngredients.length > 0) {
-            for (let meal of meals) {
-                let ingredients = meal.querySelector(ingredientsDiv);
-                if (ingredients !== null) {
-                    let ingredientsText = ingredients.textContent;
-                    let hasUnwantedIngredient = false;
-                    for (let unwantedIngredient of unwantedIngredients) {
-                        if (ingredientsText.includes(unwantedIngredient)) {
-                            hasUnwantedIngredient = true;
-                            break;
-                        }
-                    }
-                    meal.style.display = (hasUnwantedIngredient ? "none" : "block");
-                } else {
-                    meal.style.display = "block"; // no description? no unwanted ingredients.
-                }
-            }
-        } else { // empty filter? show all back again
-            for (let meal of meals) {
-                meal.style.display = "block";
-            }
-        }
-    }
-
     function run() {
         applyCss(cssRules);
         addInputs();
         loadDefaultValues();
-        startFiltering();
     }
 
     function isInRestaurantMenuView() {
