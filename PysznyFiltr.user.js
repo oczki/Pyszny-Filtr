@@ -48,14 +48,20 @@
         font-size: 120%;
         padding: 5px;
     }
-    ${pysznyFiltrDiv} input:first-child {
+    ${pysznyFiltrWantedInput} {
         margin-right: -1px;
         border-top-left-radius: 2px;
         border-bottom-left-radius: 2px;
     }
-    ${pysznyFiltrDiv} input:last-child {
+    ${pysznyFiltrWantedInput}::placeholder {
+        color: #92c992;
+    }
+    ${pysznyFiltrUnwantedInput} {
         border-top-right-radius: 2px;
         border-bottom-right-radius: 2px;
+    }
+    ${pysznyFiltrUnwantedInput}::placeholder {
+        color: #e88d8d;
     }
 `;
 
@@ -76,13 +82,14 @@
     }
 
     class IngredientFilter {
-        constructor(direction, callback) {
+        constructor(direction, placeholder) {
             this.direction = direction;
-            this.callback = callback;
+            this.placeholder = placeholder;
         }
 
         createInputElement() {
             let elem = document.createElement("input");
+            elem.placeholder = this.placeholder;
             elem.classList.add("pyszny-filtr");
             elem.classList.add(this.direction);
             return elem;
@@ -103,8 +110,8 @@
     class FiltersHolder {
         constructor() {
             this.meals = getMeals();
-            this.wanted = new IngredientFilter("wanted");
-            this.unwanted = new IngredientFilter("unwanted");
+            this.wanted = new IngredientFilter("wanted", "chcę to, to, …");
+            this.unwanted = new IngredientFilter("unwanted", "nie chcę, bleh, …");
 
             this.wanted.input.addEventListener("input", () => this.filter());
             this.unwanted.input.addEventListener("input", () => this.filter());
