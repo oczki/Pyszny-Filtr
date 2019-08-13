@@ -22,6 +22,9 @@
     const ingredientsDiv = "div.meal__description-additional-info";
 
     const cssRules = `
+    div.restaurant-logo {
+        pointer-events: none;
+    }
     ${infoAndFav} {
         border: none;
     }
