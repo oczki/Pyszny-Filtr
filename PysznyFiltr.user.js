@@ -41,9 +41,12 @@
         border-bottom-right-radius: 2px;
         height: 48px;
     }
+    ${pysznyFiltrDiv} {
+        z-index: 10;
+    }
     ${pysznyFiltrDiv} input {
         border: 1px solid #ebebeb;
-        width: 150px;
+        width: 180px;
         height: 48px;
         font-size: 120%;
         padding: 5px;
