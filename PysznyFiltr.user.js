@@ -23,8 +23,8 @@
 
     const cssRules = `
     /* modify existing page elements */
-    div.restaurant-logo {
-        pointer-events: none;
+    div.restaurant-logo__container {
+        top: -165px;
     }
     ${infoAndFav} {
         border: none;
@@ -141,6 +141,7 @@
                 shownMeals += show;
             }
             this.infobox = shownMeals;
+            hideEmptyCategories();
         }
 
         set infobox(shownMeals) {
@@ -149,6 +150,15 @@
                 text = shownMeals + " z " + this.meals.length + " dań";
             }
             document.querySelector(pysznyFiltrDiv).setAttribute("shown-meals", text);
+        }
+    }
+
+    function hideEmptyCategories() {
+        let categories = document.querySelectorAll("div.menucard__meals-group");
+        for (let category of categories) {
+            let meals = Array.from(category.querySelectorAll(mealContainer));
+            const show = meals.some(meal => meal.style.display === "block");
+            category.style.display = (show ? "block" : "none");
         }
     }
 
