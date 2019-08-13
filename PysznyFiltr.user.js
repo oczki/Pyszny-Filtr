@@ -17,7 +17,6 @@
     const pysznyFiltrDiv = infoAndFav + " div.pyszny-filtr";
     const pysznyFiltrWantedInput = pysznyFiltrDiv + " input.wanted";
     const pysznyFiltrUnwantedInput = pysznyFiltrDiv + " input.unwanted";
-
     const mealContainer = "div.meal-container";
     const ingredientsDiv = "div.meal__description-additional-info";
 
@@ -117,7 +116,7 @@
         }
 
         get value() {
-            return this.input.value.split(/\s*,\s*/).filter(nonEmpty => nonEmpty);
+            return this.input.value.split(/\s*,\s*/).filter(nonEmpty => nonEmpty).map(x => x.toLowerCase());
         }
     }
 
@@ -134,7 +133,7 @@
         filter() {
             let shownMeals = 0;
             for (let meal of this.meals) {
-                let ingredients = (meal.querySelector(ingredientsDiv) || {}).textContent || "";
+                let ingredients = ((meal.querySelector(ingredientsDiv) || {}).textContent || "").toLowerCase();
                 const show = this.wanted.value.every(item => ingredients.includes(item))
                           && this.unwanted.value.every(item => !ingredients.includes(item));
                 meal.style.display = (show ? "block" : "none");
