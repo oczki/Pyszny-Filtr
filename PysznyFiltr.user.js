@@ -22,6 +22,7 @@
     const ingredientsDiv = "div.meal__description-additional-info";
 
     const cssRules = `
+    /* modify existing page elements */
     div.restaurant-logo {
         pointer-events: none;
     }
@@ -41,6 +42,8 @@
         border-bottom-right-radius: 2px;
         height: 48px;
     }
+
+    /* Pyszny Filtr input fields */
     ${pysznyFiltrDiv} {
         z-index: 10;
     }
@@ -49,7 +52,7 @@
         width: 180px;
         height: 48px;
         font-size: 120%;
-        padding: 5px;
+        padding: 0.5em;
     }
     ${pysznyFiltrWantedInput} {
         margin-right: -1px;
@@ -65,6 +68,14 @@
     }
     ${pysznyFiltrUnwantedInput}::placeholder {
         color: #e88d8d;
+    }
+
+    /* showing how many meals fit the criteria */
+    ${pysznyFiltrDiv}:before {
+        content: attr(shown-meals);
+        margin-right: 1em;
+        font-size: 120%;
+        background: white;
     }
 `;
 
@@ -121,21 +132,30 @@
         }
 
         filter() {
-            let wanted = this.wanted.value;
-            let unwanted = this.unwanted.value;
-
+            let shownMeals = 0;
             for (let meal of this.meals) {
                 let ingredients = (meal.querySelector(ingredientsDiv) || {}).textContent || "";
-                const show = wanted.every(ingredient => ingredients.includes(ingredient))
-                          && unwanted.every(ingredient => !ingredients.includes(ingredient));
+                const show = this.wanted.value.every(item => ingredients.includes(item))
+                          && this.unwanted.value.every(item => !ingredients.includes(item));
                 meal.style.display = (show ? "block" : "none");
+                shownMeals += show;
             }
+            this.infobox = shownMeals;
+        }
+
+        set infobox(shownMeals) {
+            let text = "Filtr składników";
+            if (shownMeals !== this.meals.length) {
+                text = shownMeals + " z " + this.meals.length + " dań";
+            }
+            document.querySelector(pysznyFiltrDiv).setAttribute("shown-meals", text);
         }
     }
 
     function addInputs() {
         let container = document.createElement("div");
         container.classList.add("pyszny-filtr");
+        container.setAttribute("shown-meals", "Filtr składników");
         insertDomBefore(container, document.querySelector(restaurantInfoButton));
         let filters = new FiltersHolder();
         container.appendChild(filters.wanted.input);
