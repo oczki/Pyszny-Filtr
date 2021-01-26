@@ -1,7 +1,12 @@
 # Pyszny-Filtr
 Allows filtering liked and disliked ingredients on Pyszne.pl.
 
-![image](https://user-images.githubusercontent.com/2924029/66257852-56493c80-e79e-11e9-80ce-93b127e6cbc1.png)
+You can enter multiple ingredients by separating them with a comma.
+
+- Entering `ceb, ruko` in "chcę to, to, ..." will show meals that have **both** "cebula" **and** "rukola".
+- Entering `ceb, ruko` in "nie chcę, bleh, ..." will show meals that have **neither** "cebula" **nor** "rukola".
+
+![image](https://user-images.githubusercontent.com/2924029/105899964-af845180-601b-11eb-8d75-057e4d99c2b3.png)
 
 Installation
 ---
