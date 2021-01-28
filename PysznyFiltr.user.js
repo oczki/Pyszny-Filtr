@@ -18,12 +18,13 @@
   const restaurantAvatar = '[data-qa="flex"] > [data-qa="avatar"]';
   const restaurantInfoButton = '[data-qa="restaurant-header-action-info"]';
   const restaurantFavButton = '[data-qa="restaurant-header-action-favourite"]';
+  const borderColor = '#D7D7D7';
   
   // These selectors are internal for the script, there's no point changing them:
   const pysznyFiltrClassName = 'pyszny-filtr';
   const pysznyFiltrDiv = '.' + pysznyFiltrClassName;
-  const pysznyFiltrWantedInput = pysznyFiltrDiv + " input.wanted";
-  const pysznyFiltrUnwantedInput = pysznyFiltrDiv + " input.unwanted";
+  const pysznyFiltrWantedInput = pysznyFiltrDiv + ' input.wanted';
+  const pysznyFiltrUnwantedInput = pysznyFiltrDiv + ' input.unwanted';
   const wantedColor = '#428542';
   const unwantedColor = '#D73C3C';
   
@@ -33,20 +34,21 @@
     :root {
       --pyszny-filtr-color-wanted: ${wantedColor};
       --pyszny-filtr-color-unwanted: ${unwantedColor};
+      --border-color: ${borderColor};
     }
     ${restaurantAvatar} {
       position: relative;
       top: -50px;
     }
     ${restaurantInfoButton} {
-      border: 1px solid #ebebeb;
+      border: 1px solid var(--border-color);
       border-top-left-radius: 2px;
       border-bottom-left-radius: 2px;
       margin: 0 -1px 0 5px;
       height: 48px;
     }
     ${restaurantFavButton} {
-      border: 1px solid #ebebeb;
+      border: 1px solid var(--border-color);
       border-top-right-radius: 2px;
       border-bottom-right-radius: 2px;
       height: 48px;
@@ -57,7 +59,7 @@
       z-index: 10;
     }
     ${pysznyFiltrDiv} input {
-      border: 1px solid #ebebeb;
+      border: 1px solid var(--border-color);
       width: 180px;
       height: 48px;
       font-size: 120%;
