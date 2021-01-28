@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         PyszneplFilter
+// @name         Pyszny Filtr
 // @namespace    http://tampermonkey.net/
 // @version      0.2
-// @description  Filtr na Pysznepl
+// @description  Ingredients filter for restaurants' menu items on Pyszne.pl.
 // @author       fri
 // @match        https://www.pyszne.pl/menu/*
 // @grant        none
