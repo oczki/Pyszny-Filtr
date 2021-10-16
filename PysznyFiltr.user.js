@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Pyszny Filtr
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  Ingredients filter for restaurants' menu items on Pyszne.pl.
 // @author       fri
 // @match        https://www.pyszne.pl/*
@@ -14,7 +14,7 @@
   'use strict';
 
   // These selectors can change if Pyszne updates their site:
-  const categoryContainer = '[data-qa="meal-category"]';
+  const categoryContainer = '[data-qa="item-category"]';
   const mealContainer = '[data-qa="menu-list"] div[role="listitem"]';
   const ingredientsDiv = '[data-qa="text"] > [data-qa="text"]';
   const restaurantAvatar = '[data-qa="flex"] > [data-qa="avatar"]';
