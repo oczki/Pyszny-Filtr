@@ -4,8 +4,10 @@
 // @version      0.2
 // @description  Ingredients filter for restaurants' menu items on Pyszne.pl.
 // @author       fri
-// @match        https://www.pyszne.pl/menu/*
+// @match        https://www.pyszne.pl/*
 // @grant        none
+// @downloadURL  https://github.com/oczki/Pyszny-Filtr/raw/master/PysznyFiltr.user.js
+// @updateURL    https://github.com/oczki/Pyszny-Filtr/raw/master/PysznyFiltr.user.js
 // ==/UserScript==
 
 (function () {
