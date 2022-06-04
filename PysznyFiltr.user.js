@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Pyszny Filtr
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  Ingredients filter for restaurants' menu items on Pyszne.pl.
 // @author       fri
 // @match        https://www.pyszne.pl/*
@@ -15,9 +15,9 @@
 
   // These selectors can change if Pyszne updates their site:
   const categoryContainer = '[data-qa="item-category"]';
-  const mealContainer = '[data-qa="menu-list"] div[role="listitem"]';
-  const ingredientsDiv = '[data-qa="text"] > [data-qa="text"]';
-  const restaurantAvatar = '[data-qa="flex"] > [data-qa="avatar"]';
+  const mealContainer = '[data-qa="item-category-list"] > [data-qa="util"] > ul > li, [data-qa="popular-items-list"] > div[role="listitem"]';
+  const ingredientsDiv = '[data-qa="item"] [data-qa="text"] > [data-qa="text"]';
+  const restaurantAvatar = '[data-qa="flex"] [data-qa="avatar"]';
   const restaurantInfoButton = '[data-qa="restaurant-header-action-info"]';
   const restaurantFavButton = '[data-qa="restaurant-header-action-favourite"]';
   const borderColor = '#D7D7D7';
@@ -152,6 +152,7 @@
     }
 
     filter() {
+      this.meals = getMeals();
       let shownMeals = 0;
       for (let meal of this.meals) {
         let ingredients = ((meal.querySelector(ingredientsDiv) || {}).textContent || "").toLowerCase();
@@ -181,6 +182,10 @@
       category.style.display = (show ? "block" : "none");
     }
   }
+  
+  function repeatedlyInvokeFilters(filters) {
+    setTimeout(() => { filters.filter() }, 1000);
+  }
 
   function addInputs() {
     let container = document.createElement("div");
@@ -190,9 +195,8 @@
     let filters = new FiltersHolder();
     container.appendChild(filters.wanted.input);
     container.appendChild(filters.unwanted.input);
+    repeatedlyInvokeFilters(filters);
   }
-
-  function loadDefaultValues() { }
 
   function getMeals() {
     return document.querySelectorAll(mealContainer);
@@ -201,7 +205,6 @@
   function run() {
     applyCss(cssRules);
     addInputs();
-    loadDefaultValues();
   }
 
   function shouldRun() {
