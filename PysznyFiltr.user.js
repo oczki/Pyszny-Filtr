@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Pyszny Filtr
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  Ingredients filter for restaurants' menu items on Pyszne.pl.
 // @author       fri
 // @match        https://www.pyszne.pl/*
@@ -14,14 +14,15 @@
   'use strict';
 
   // These selectors can change if Pyszne updates their site:
+  const popularCategoryContainer = '[data-qa="popular-items"]';
   const categoryContainer = '[data-qa="item-category"]';
-  const mealContainer = '[data-qa="item-category-list"] > [data-qa="util"] > ul > li, [data-qa="popular-items-list"] > div[role="listitem"]';
+  const mealItem = 'li:has([data-dd-action-name="menu-item"])';
+  const mealContainer = `${categoryContainer} ${mealItem}, ${popularCategoryContainer} ${mealItem}`;
   const ingredientsDiv = '[data-qa="item"] [data-qa="text"] > [data-qa="text"]';
-  const restaurantAvatar = '[data-qa="flex"] [data-qa="avatar"]';
   const restaurantInfoButton = '[data-qa="restaurant-header-action-info"]';
   const restaurantFavButton = '[data-qa="restaurant-header-action-favourite"]';
   const borderColor = '#D7D7D7';
-  
+
   // These selectors are internal for the script, there's no point changing them:
   const pysznyFiltrClassName = 'pyszny-filtr';
   const pysznyFiltrDiv = '.' + pysznyFiltrClassName;
@@ -29,56 +30,40 @@
   const pysznyFiltrUnwantedInput = pysznyFiltrDiv + ' input.unwanted';
   const wantedColor = '#428542';
   const unwantedColor = '#D73C3C';
-  
+
 
   const cssRules = `
-    /* modify existing page elements */
     :root {
       --pyszny-filtr-color-wanted: ${wantedColor};
       --pyszny-filtr-color-unwanted: ${unwantedColor};
       --border-color: ${borderColor};
     }
-    ${restaurantAvatar} {
-      position: relative;
-      top: -50px;
+    body {
+      overflow-y: scroll;
     }
-    ${restaurantInfoButton} {
-      border: 1px solid var(--border-color);
-      border-top-left-radius: 2px;
-      border-bottom-left-radius: 2px;
-      margin: 0 -1px 0 5px;
-      height: 48px;
-    }
-    ${restaurantFavButton} {
-      border: 1px solid var(--border-color);
-      border-top-right-radius: 2px;
-      border-bottom-right-radius: 2px;
-      height: 48px;
-    }
-
-    /* Pyszny Filtr input fields */
     ${pysznyFiltrDiv} {
       z-index: 10;
+      margin-right: 4px;
     }
     ${pysznyFiltrDiv} input {
       border: 1px solid var(--border-color);
       width: 180px;
       height: 48px;
       font-size: 120%;
-      padding: 0.5em;
+      padding: 0 0.75em;
     }
     ${pysznyFiltrWantedInput} {
       margin-right: -1px;
-      border-top-left-radius: 2px;
-      border-bottom-left-radius: 2px;
+      border-top-left-radius: 100px;
+      border-bottom-left-radius: 100px;
       color: var(--pyszny-filtr-color-wanted);
     }
     ${pysznyFiltrWantedInput}::placeholder {
       color: var(--pyszny-filtr-color-wanted);
     }
     ${pysznyFiltrUnwantedInput} {
-      border-top-right-radius: 2px;
-      border-bottom-right-radius: 2px;
+      border-top-right-radius: 100px;
+      border-bottom-right-radius: 100px;
       color: var(--pyszny-filtr-color-unwanted);
     }
     ${pysznyFiltrUnwantedInput}::placeholder {
@@ -182,7 +167,7 @@
       category.style.display = (show ? "block" : "none");
     }
   }
-  
+
   function repeatedlyInvokeFilters(filters) {
     setTimeout(() => { filters.filter() }, 1000);
   }
